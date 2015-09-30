@@ -54,4 +54,6 @@ EXPOSE 22 80 443
 
 COPY start.sh /opt/start.sh
 
+RUN chmod a+x /opt/start.sh
+
 CMD ["/opt/start.sh"]
