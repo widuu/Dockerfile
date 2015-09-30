@@ -16,11 +16,9 @@ RUN apt-get update
 
 # 安装环境
 
-RUN apt-get  install gcc make libssl-dev curl nginx git -y
+RUN apt-get  install libssl-dev curl nginx git openssh-server -y
 
-# 安装ssh
-
-RUN apt-get install -y openssh-server
+# 配置 ssh
 
 RUN mkdir -p /var/run/sshd
 
@@ -36,14 +34,13 @@ RUN curl -o /opt/node.tar.gz http://oss.npm.taobao.org/dist/node/v4.0.0/node-v4.
 RUN	/node-v4.0.0-linux-x64/bin/npm install gitbook-cli -g && \
 	cd /usr/local/bin && \
 	ln -sf /node-v4.0.0-linux-x64/bin/* . 
+
 # 从github clone chinese_docker 并且build
 
-RUN	cd /usr/share/nginx/html && \
+RUN	cd /usr/share/nginx && \
 	git clone https://github.com/widuu/chinese_docker.git && \
 	cd chinese_docker && \
-	gitbook build && \
-	mv /usr/share/nginx/html/chinese_docker/_book/* /usr/share/nginx/html && \
-	rm -rf /usr/share/nginx/html/chinese_docker/
+	gitbook build . /usr/share/nginx/html
 
 # 设置root ssh远程登录密码为docker
 
@@ -55,6 +52,6 @@ EXPOSE 22 80 443
 
 # 开启服务
 
-COPY start.sh start.sh
+COPY start.sh /opt/start.sh
 
-CMD ["start.sh"]
+CMD ["/opt/start.sh"]
